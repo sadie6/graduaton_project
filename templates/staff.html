@@ -1,0 +1,107 @@
+{% extends 'layout.html' %}
+
+{% block nav-staff %}
+layui-this
+{% endblock %}
+
+{% block content %}
+<div class="layui-body">
+<!-- 内容主体区域 -->
+    <div class="layui-col-md12 layui-card">
+        <div class="layui-card-header">
+            <strong>员工信息</strong>&nbsp;&nbsp;
+            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe654;</i></button>
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="10">
+                    <col width="15">
+                    <col width="10">
+                    <col width="20">
+                    <col width="15">
+                    <col width="15">
+                    <col width="15">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>员工工号</th>
+                        <th>员工姓名</th>
+                        <th>工作单位</th>
+                        <th>角色</th>
+                        <th>联系方式</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for staff in staffs %}
+                    <tr id = "{{ staff.staff_id }}">
+                        <td>{{ staff.staff_id }}</td>
+                        <td>{{ staff.staff_name }}</td>
+                        <td name="{{ staff.workspace_id.station_id }}">{{ staff.workspace_id.station_name }}</td>
+                        <td name="{{ staff.staff_role }}">{{ staff.get_staff_role_display }}</td>
+                        <td>{{ staff.staff_tel }}</td>
+                        <td>
+                            <button class="layui-btn layui-btn-sm" onclick="updateInfo({{ staff.staff_id }})"><i class="layui-icon">&#xe642;</i></button>
+                            <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del({{ staff.staff_id }})"><i class="layui-icon">&#xe640;</i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    layui.use('element', function(){
+        var element = layui.element; 
+    });
+    var station = '<div class="layui-form-item"><label class="layui-form-label">员工单位</label><div class="layui-input-block"><select name="workspace_id" lay-verify=""><option value="">请选择单位</option>'
+    {% for station in stations %}
+    station += '<option value="' + '{{ station.station_id }}' + '">' + '{{ station.station_name }}' + '</option>'
+    {% endfor %}
+    station += '</select></div></div>'
+    function updateInfo(staff_id) {
+        staff_name = $('#' + staff_id).children().eq(1).html()
+        workspace_id = $('#' + staff_id).children().eq(2).attr('name')
+        staff_role = $('#' + staff_id).children().eq(3).attr('name')
+        staff_tel = $('#' + staff_id).children().eq(4).html()
+        layer.open({
+            type: 1,
+            area: ['500px', '500px'],
+            title: "修改员工信息", 
+            content: '<form class="layui-form" action="/hr_management/update" method="post">' + "{% csrf_token %}" + '<div class="layui-form-item"><label class="layui-form-label">员工工号</label><div class="layui-input-block"><input readonly="readonly" type="text" value="' + staff_id + '" name="staff_id" lay-verify="staff_id" autocomplete="off" class="layui-input" /></div></div><div class="layui-form-item"><label class="layui-form-label">员工姓名</label><div class="layui-input-block"><input type="text" value="' + staff_name + '" name="staff_name" lay-verify="staff_name" autocomplete="off" class="layui-input" /></div></div>' + station + '<div class="layui-form-item"><label class="layui-form-label">职务</label><div class="layui-input-block"><select name="staff_role" lay-verify=""><option value="">请选择角色</option><option value="A">系统管理员</option><option value="C">站点业务员</option><option value="S">仓库管理员</option><option value="D">运输司机</option></select></div></div><div class="layui-form-item"><label class="layui-form-label">联系方式</label><div class="layui-input-block"><input type="text" value="' + staff_tel + '" name="staff_tel" lay-verify="staff_tel" autocomplete="off" class="layui-input" /></div></div><div class="layui-right"><button type="submit" class="layui-btn layui-btn-sm">添加</button><button class="layui-btn layui-btn-sm">取消</button></div></form>'
+        })
+        $('select[name=workspace_id]').val(workspace_id)
+        $('select[name=staff_role]').val(staff_role)
+        form.render()
+    }
+    function add() {
+        layer.open({
+            type: 1,
+            title: "新增员工", //宽高
+            area: ['500px', '500px'],
+            content: '<form class="layui-form" action="/hr_management/insert" method="post">' + "{% csrf_token %}" + '<div class="layui-form-item"><label class="layui-form-label">初始密码</label><div class="layui-input-block"><input type="text" name="password" lay-verify="password" autocomplete="off" class="layui-input" /></div></div><div class="layui-form-item"><label class="layui-form-label">员工姓名</label><div class="layui-input-block"><input type="text" name="staff_name" lay-verify="staff_name" autocomplete="off" class="layui-input" /></div></div>' + station + '<div class="layui-form-item"><label class="layui-form-label">角色</label><div class="layui-input-block"><select name="staff_role" lay-verify=""><option value="">请选择角色</option><option value="A">系统管理员</option><option value="C">站点业务员</option><option value="S">仓库管理员</option><option value="D">运输司机</option></select></div></div><div class="layui-form-item"><label class="layui-form-label">联系方式</label><div class="layui-input-block"><input type="text" name="staff_tel" lay-verify="staff_tel" autocomplete="off" class="layui-input" /></div></div><div class="layui-right"><button type="submit" class="layui-btn layui-btn-sm">添加</button><button class="layui-btn layui-btn-sm">取消</button></div></form>'
+        })
+        form.render()
+    }
+    function del(staff_id) {
+        layer.confirm('确认删除？', {
+            btn: ['确认','取消'] //按钮
+        }, function(){
+            $.ajax({
+                url: 'delete',
+                type: 'post',
+                data: {staff_id: staff_id, csrfmiddlewaretoken: '{{ csrf_token }}'}, 
+                success: function() {
+                    layer.msg('删除成功', {icon: 1});
+                    location.reload()
+                }
+            })
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>校园数据可视化平台</title>
+    <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}">
+    <link rel="stylesheet" href="{% static './css/app.css' %}">
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">校园数据可视化平台</div>
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item" lay-unselect="">
+    <a href="javascript:;"><img src="//t.cn/RCzsdCq" class="layui-nav-img">我</a>
+    <dl class="layui-nav-child">
+      <dd><a href="javascript:;">修改信息</a></dd>
+      <dd><a href="javascript:;">安全管理</a></dd>
+      <dd><a href="/logout">退了</a></dd>
+    </dl>
+  </li>
+                <!-- <li class="layui-nav-item"><a href="/logout">退出</a></li> -->
+            </ul>
+        </div>
+      
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                    <li class="layui-nav-item">
+                        <a href="/student/" class="{% block nav-order %}{% endblock %}">学生信息模块</a>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="/student/library/" class="{% block nav-library %}{% endblock %}">图书馆模块</a>
+                    </li>
+                    
+                    <li class="layui-nav-item">
+                        <a href="/student/grade/" class="{% block nav-grade %}{% endblock %}">学生成绩模块</a>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="/student/internet/" class="{% block nav-internet %}{% endblock %}">上网模块</a>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="/student/cartoon/" class="{% block nav-cartoon %}{% endblock %}">一卡通模块</a>
+                    </li>
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="" href="javascript:;">综合分析模块</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="/student/fp_growth" class="{% block nav-fp_1 %}{% endblock %}">学生成绩与借书数据</a></dd>
+                            <dd><a href="/transport_management/route" class="{% block nav-route %}{% endblock %}">xxxx</a></dd>
+                            <dd><a href="/transport_management/time" class="{% block nav-time %}{% endblock %}">xxxxx</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+
+        <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        <span class="layui-layout-right">© sadie出品&nbsp;&nbsp;&nbsp;</span>
+        </div>
+    </div>
+
+    <script src="{% static './js/jquery-2.0.3.min.js' %}"></script>
+    <script src="{% static './layui/layui.all.js' %}"></script>
+    <script src="{% static './js/app.js' %}"></script>
+    <script src="{% static 'js/echarts-2.2.7/build/dist/echarts.js' %}"></script>
+    <script>
+    layui.use('element', function(){
+        var element = layui.element; 
+    })
+    layui.use('form', function(){
+        form = layui.form
+    })
+    layui.use('laydate', function(){
+        laydate = layui.laydate
+    })
+    </script>
+
+    {% block script %}
+    {% endblock %}
+</body>
+</html>

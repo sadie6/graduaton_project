@@ -1,0 +1,206 @@
+{% extends 'layout.html' %}
+{% load staticfiles %}
+
+{% block nav-library %}
+layui-this
+{% endblock %}
+
+{% block content %}
+<div class="layui-body">
+<!-- 内容主体区域 -->
+    <div style="width:600px;float:left;">
+    <div class="layui-col-md12 layui-card" >
+        <div class="layui-card-header">
+            <strong>各月份借书量变化</strong>&nbsp;&nbsp;
+            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe654;</i></button>
+        </div>
+        <div class="layui-card-body">
+            <div id="main" style="height:240px"></div>
+        </div>
+    </div>
+    <div class="layui-col-md12 layui-card" >
+        <div class="layui-card-header">
+            <strong>借书类型比例</strong>&nbsp;&nbsp;
+            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe654;</i></button>
+        </div>
+        <div class="layui-card-body">
+            <div id="main1" style="height:200px"></div>
+        </div>
+    </div>
+    </div>
+    <div class="layui-col-md12 layui-card" style="width:500px;float:right;">
+        <div class="layui-card-header">
+            <strong>最受欢迎的书</strong>&nbsp;&nbsp;
+        </div>
+        <div class="layui-card-body">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="10">
+                    <col width="10">
+                    <col width="10">
+                    <col width="10">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>书名</th>
+                        <th>类型</th>
+                        <th>索书号</th>
+                        <th>被借次数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in c %}
+                    <tr>
+                        <td>{{ i.name }}</td>
+                        <td>{{ i.category }}</td>
+                        <td>TP314-45</td>
+                        <td>{{ i.num }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
+
+
+{% block script %}
+<script type="text/javascript">
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
+            }
+        });
+        
+        // 使用
+        require(
+            [
+                'echarts',
+                'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/line'
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main')); 
+                
+                var option = {
+                    tooltip : {
+                        trigger: 'axis'
+                    },
+                    toolbox: {
+                        show : true,
+                        feature : {
+                            magicType : {show: true, type: ['line', 'bar']},
+                            restore : {show: true},
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    calculable : true,
+                    xAxis : [
+                        {
+                            type : 'category',
+                            boundaryGap : false,
+                            data : ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月',]
+                        }
+                    ],
+                    yAxis : [
+                        {
+                            type : 'value',
+                            axisLabel : {
+                                formatter: '{value} 本'
+                            }
+                        }
+                    ],
+                    series : [
+                        {
+                            name:'借书量',
+                            type:'line',
+                            data:{{ a }},
+                            markPoint : {
+                                data : [
+                                    {type : 'max', name: '最大值'},
+                                    {type : 'min', name: '最小值'}
+                                ]
+                            },
+                            markLine : {
+                                data : [
+                                    {type : 'average', name: '平均值'}
+                                ]
+                            }
+                        },
+                    ]
+                };
+                    
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+        );
+    </script>
+<script type="text/javascript">
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
+            }
+        });
+        
+        // 使用
+        require(
+            [
+                'echarts',
+                'echarts/chart/pie', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/funnel'
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main1')); 
+                
+                var option = {
+                    tooltip : {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    toolbox: {
+                        show : true,
+                        feature : {
+                            magicType : {
+                                show: true, 
+                                type: ['pie', 'funnel'],
+                                option: {
+                                    funnel: {
+                                        x: '25%',
+                                        width: '50%',
+                                        funnelAlign: 'left',
+                                        max: 1548
+                                    }
+                                }
+                            },
+                            restore : {show: true},
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    calculable : true,
+                    series : [
+                        {
+                            name:'借书类型',
+                            type:'pie',
+                            radius : '55%',
+                            center: ['50%', '60%'],
+                            data:[
+                            {% for i in b %}
+                                {value:{{ i.value }}, name:'{{ i.name }}'},
+                            {% endfor %}
+                            ]
+                        }
+                    ]
+                };
+                    
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+        );
+    </script>
+{% endblock %}

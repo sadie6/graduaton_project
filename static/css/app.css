@@ -1,0 +1,26 @@
+.layui-body{
+    background-color: #F2F2F2;
+    padding: 20px;
+}
+.layui-layer.layui-layer-page, .layui-layer.layui-layer-dialog{
+    margin-top: -100px;
+    max-height: 500px;
+    overflow: auto;
+}
+.layui-layer-content{
+    padding: 20px;
+}
+.layui-form-label{
+    padding: 0;
+    padding-top: 9px;
+}
+.layui-right{
+    margin-left: 220px;
+}
+.driver-name {
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    color: gray;
+    font-size: 14px;
+}
