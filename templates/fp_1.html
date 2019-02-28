@@ -6,8 +6,228 @@ layui-this
 {% endblock %}
 
 {% block content %}
+<div class="layui-body">
+<!-- 内容主体区域 -->
+    <div class="layui-col-md12 layui-card" >
+        <div class="layui-card-header">
+            <strong>不同数据项间的关联强度</strong>&nbsp;&nbsp;
+            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe654;</i></button>
+        </div>
+        <div class="layui-card-body">
+            <div id="main" style="height:480px"></div>
+        </div>
+    </div>
+    <div class="layui-col-md12 layui-card" >
+        <div class="layui-card-header">
+            <strong>数据项间的关联关系</strong>&nbsp;&nbsp;
+            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe654;</i></button>
+        </div>
+        <div class="layui-card-body">
+            <div id="main1" style="height:480px"></div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 
 {% block script %}
+<script type="text/javascript">
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
+            }
+        });
+        
+        // 使用
+        require(
+            [
+                'echarts',
+                'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/line'
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main')); 
+                
+                var option = {
+				    tooltip : {
+				        trigger: 'axis'
+				    },
+				    legend: {
+				        data:['置信度','覆盖度','力度','提升度','利用度']
+				    },
+				    toolbox: {
+				        show : true,
+				        feature : {
+				            restore : {show: true},
+				            saveAsImage : {show: true}
+				        }
+				    },
+				    calculable : true,
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : false,
+				            data : {{ a | safe }}
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            axisLabel : {
+				                formatter: '{value}%'
+				            }
+				        }
+				    ],
+				    series : [
+				       
+				        {
+				            name:'置信度',
+				            type:'line',
+				            data:{{ b }},
+				           
+				            markLine : {
+				                data : [
+				                    {type : 'average', name : '平均值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:'覆盖度',
+				            type:'line',
+				            data:{{ coverage  }},
+				           
+				            markLine : {
+				                data : [
+				                    {type : 'average', name : '平均值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:'力度',
+				            type:'line',
+				            data:{{ strength  }},
+				           
+				            markLine : {
+				                data : [
+				                    {type : 'average', name : '平均值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:'提升度',
+				            type:'line',
+				            data:{{ lift  }},
+				           
+				            markLine : {
+				                data : [
+				                    {type : 'average', name : '平均值'}
+				                ]
+				            }
+				        },
+				        {
+				            name:'利用度',
+				            type:'line',
+				            data:{{ leverage  }},
+				           
+				            markLine : {
+				                data : [
+				                    {type : 'average', name : '平均值'}
+				                ]
+				            }
+				        },
+				    ]
+				};
+                    
+                    
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+        );
+    </script>
+<script type="text/javascript">
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
+            }
+        });
+        
+        // 使用
+        require(
+            [
+                'echarts',
+                'echarts/chart/force', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/chord'
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main1')); 
+                
+                var option =  {
+					    tooltip : {
+					        trigger: 'item',
+					        formatter: function (params) {
+					            if (params.indicator2) {    // is edge
+					                return params.indicator2 + ' ' + params.name + ' ' + params.indicator;
+					            } else {    // is node
+					                return params.name
+					            }
+					        }
+					    },
+					    toolbox: {
+					        show : true,
+					        feature : {
+					            restore : {show: true},
+					            magicType: {show: true, type: ['force', 'chord']},
+					            saveAsImage : {show: true}
+					        }
+					    },
+					    legend: {
+					        x: 'left',
+					        data:['成绩好', '上网时间短', '借书多']
+					    },
+					    series : [
+					        {
+					            name: '不同数据项关联强度',
+					            type:'chord',
+					            sort : 'ascending',
+					            sortSub : 'descending',
+					            ribbonType: false,
+					            radius: '60%',
+					            itemStyle : {
+					                normal : {
+					                    label : {
+					                        rotate : true
+					                    }
+					                }
+					            },
+					            minRadius: 7,
+					            maxRadius: 20,
+					            // 使用 nodes links 表达和弦图
+					            nodes: [
+					            {% for d1 in d %}
+					                {name:'{{ d1 }}' },
+					            {% endfor %}
+					            
+					                
+					            ],
+					            links: [
+					            {% for c1 in c %}
+					                {source: '{{ c1.0 }}', target: '{{ c1.1 }}', weight: 1, name: '强关联'},
+					            {% endfor %}
+					            
+					              
+					            ]
+					        }
+					    ]
+					};
+                    
+                    
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+        );
+    </script>
 {% endblock %}

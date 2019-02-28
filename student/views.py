@@ -86,7 +86,7 @@ def library(request):
 	'b':b,
 	'c':c,
 	}
-	print(a)
+	print(c)
 	return render(request, 'library_info.html', content)
 
 def grade(request):
@@ -174,12 +174,60 @@ def cartoon(request):
 
 
 def fp_growth(request):
-	sample = {1:'成绩好',2:'成绩差',3:'借书多',4:'借书少',5:'上网时间长',6:'上网时间短',7:'获奖',8:'未获奖',
-	9:'饮食规律',10:'饮食不规律',11:'农村',12:'城市',13:'贫困',14:'非贫困'}
-	
+	#import orangecontrib.associate.fpgrowth as oaf
+	sample = {1:'成绩好',2:'借书多',3:'上网时间短',4:'获奖',5:'饮食规律',6:'农村',7:'贫困'}
+	data = [[1,2,4,5,6],[1,3,5,7],[1,2,4],[2,6,7],[2,3,1,4],[1,3,5],[5],[1,2,3,4,5,6,7],[1,2,3,4,5],[2,4],[1,4,3,5,6],[1,2,3,5]]
+
+	#itemsets = dict(oaf.frequent_itemsets(data, 0.5))
+	#rules = list(oaf.association_rules(itemsets, 0.5))
+	#result = list(oaf.rules_stats(rules, itemsets, len(data)))
+	#rules = [(frozenset([2, 4]), frozenset([1]), 5, 0.8333333333333334), (frozenset([1, 4]), frozenset([2]), 5, 0.8333333333333334), (frozenset([4]), frozenset([1, 2]), 5, 0.7142857142857143), (frozenset([1, 2]), frozenset([4]), 5, 0.8333333333333334), (frozenset([2]), frozenset([1, 4]), 5, 0.625), (frozenset([1]), frozenset([2, 4]), 5, 0.5555555555555556), (frozenset([3, 5]), frozenset([1]), 6, 1.0), (frozenset([1, 5]), frozenset([3]), 6, 0.8571428571428571), (frozenset([5]), frozenset([1, 3]), 6, 0.75), (frozenset([1, 3]), frozenset([5]), 6, 0.8571428571428571), (frozenset([3]), frozenset([1, 5]), 6, 0.8571428571428571), (frozenset([1]), frozenset([3, 5]), 6, 0.6666666666666666), (frozenset([4]), frozenset([2]), 6, 0.8571428571428571), (frozenset([2]), frozenset([4]), 6, 0.75), (frozenset([2]), frozenset([1]), 6, 0.75), (frozenset([1]), frozenset([2]), 6, 0.6666666666666666), (frozenset([5]), frozenset([1]), 7, 0.875), (frozenset([1]), frozenset([5]), 7, 0.7777777777777778), (frozenset([4]), frozenset([1]), 6, 0.8571428571428571), (frozenset([1]), frozenset([4]), 6, 0.6666666666666666), (frozenset([5]), frozenset([3]), 6, 0.75), (frozenset([3]), frozenset([5]), 6, 0.8571428571428571), (frozenset([3]), frozenset([1]), 7, 1.0), (frozenset([1]), frozenset([3]), 7, 0.7777777777777778)]
+	result = [(frozenset({3, 5}), frozenset({1}), 7, 1.0, 0.5384615384615384, 1.4285714285714286, 1.3, 0.1242603550295858), (frozenset({1, 5}), frozenset({3}), 7, 0.875, 0.6153846153846154, 1.0, 1.421875, 0.15976331360946747), (frozenset({5}), frozenset({1, 3}), 7, 0.7777777777777778, 0.6923076923076923, 0.8888888888888888, 1.2638888888888888, 0.11242603550295859), (frozenset({1, 3}), frozenset({5}), 7, 0.875, 0.6153846153846154, 1.125, 1.2638888888888888, 0.11242603550295859), (frozenset({3}), frozenset({1, 5}), 7, 0.875, 0.6153846153846154, 1.0, 1.421875, 0.15976331360946747), (frozenset({1}), frozenset({3, 5}), 7, 0.7, 0.7692307692307693, 0.7, 1.3, 0.1242603550295858), (frozenset({4}), frozenset({2}), 7, 0.875, 0.6153846153846154, 1.125, 1.2638888888888888, 0.11242603550295859), (frozenset({2}), frozenset({4}), 7, 0.7777777777777778, 0.6923076923076923, 0.8888888888888888, 1.2638888888888888, 0.11242603550295859), (frozenset({2}), frozenset({1}), 7, 0.7777777777777778, 0.6923076923076923, 1.1111111111111112, 1.011111111111111, 0.005917159763313609), (frozenset({1}), frozenset({2}), 7, 0.7, 0.7692307692307693, 0.9, 1.011111111111111, 0.005917159763313609), (frozenset({5}), frozenset({1}), 8, 0.8888888888888888, 0.6923076923076923, 1.1111111111111112, 1.1555555555555554, 0.08284023668639054), (frozenset({1}), frozenset({5}), 8, 0.8, 0.7692307692307693, 0.9, 1.1555555555555557, 0.08284023668639054), (frozenset({4}), frozenset({1}), 7, 0.875, 0.6153846153846154, 1.25, 1.1375, 0.0650887573964497), (frozenset({1}), frozenset({4}), 7, 0.7, 0.7692307692307693, 0.8, 1.1375, 0.0650887573964497), (frozenset({5}), frozenset({3}), 7, 0.7777777777777778, 0.6923076923076923, 0.8888888888888888, 1.2638888888888888, 0.11242603550295859), (frozenset({3}), frozenset({5}), 7, 0.875, 0.6153846153846154, 1.125, 1.2638888888888888, 0.11242603550295859), (frozenset({3}), frozenset({1}), 8, 1.0, 0.6153846153846154, 1.25, 1.3, 0.14201183431952663), (frozenset({1}), frozenset({3}), 8, 0.8, 0.7692307692307693, 0.8, 1.3, 0.14201183431952663)]
+	a = []
+	b = []
+	c = []
+	d = set()
+	coverage  = []
+	strength  = []
+	lift  = []
+	leverage  = []
+	for r in result:
+		a1 = ''
+		b1 = ''
+		c1 = []
+		for i in r[0]:
+			a1 = a1 + sample[i] + '+'
+		for i in r[1]:
+			b1 = b1 + sample[i] + '+'
+		a1 = a1.strip('+')
+		b1 = b1.strip('+')
+		d.add(a1)
+		d.add(b1)
+		c1.append(a1)
+		c1.append(b1)
+		c.append(c1)
+		t = a1 + '>>' + b1
+		a.append(t)
+		b.append(r[3]*100)
+		coverage.append(r[4]*100)
+		strength.append(r[5]*100)
+		lift.append(r[6]*100)
+		leverage.append(r[7]*100)
 
 
+
+
+	print(a,b,c,d)
+	#result = list(oaf.rules_stats(rules, itemsets, len(data)))
 	content = {
+		'a':a,
+		'b':b,
+		'c':c,
+		'd':d,
+		'coverage':coverage,
+		'strength':strength,
+		'lift':lift,
+		'leverage':leverage,
 	}
 	return render(request, 'fp_1.html', content)
 
@@ -219,8 +267,10 @@ def student_info_insert(request):
 def library_insert(request):
 	callno = 'XXXX'
 	
-	for i in range(2500,3000):
-		name = 'xxx%s' %i
+	for i in range(500,1500):
+		#name = 'xxx%s' %i
+		x = random.randint(0, 30)
+		name = 'xxx%s' %x
 		category = np.random.choice(categorys, p = [0.1] * 2 + [0.06] * 5 + [0.03] * 10 + [0.05] * 4)
 		year = np.random.choice([2018])
 		month = np.random.choice(['01', '02', '03','04', '05', '06','07', '08', '09','10', '11', '12',], p = [0.18, 0.02, 0.12] + [0.05]*3 + [0.21, 0.04, 0.13] + [0.05]*3)
@@ -228,7 +278,7 @@ def library_insert(request):
 		if day//10 == 0:
 			day = '0%s' %day 
 		time = '%s-%s-%s' %(year, month, day)
-		s_id = Student_Info.objects.get(Id = random.randint(1800001, 1801800))
+		s_id = Student_Info.objects.get(Id = random.randint(1500001, 1501800))
 		print(name, category, time, s_id)
 		b1 = Borrow_Books(name = name, category = category, callno = callno, time = time, s_id = s_id)
 		#b1.save()
