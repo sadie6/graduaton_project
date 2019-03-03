@@ -214,9 +214,6 @@ def fp_growth(request):
 		lift.append(r[6]*100)
 		leverage.append(r[7]*100)
 
-
-
-
 	print(a,b,c,d)
 	#result = list(oaf.rules_stats(rules, itemsets, len(data)))
 	content = {
