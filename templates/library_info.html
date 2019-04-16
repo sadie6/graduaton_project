@@ -10,18 +10,44 @@ layui-this
 <!-- 内容主体区域 -->
     <div style="width:600px;float:left;">
     <div class="layui-col-md12 layui-card" >
-        <div class="layui-card-header">
-            <strong>各月份借书量变化</strong>&nbsp;&nbsp;
-            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe654;</i></button>
+        <div class="layui-card-header" style="width: 100%;padding: 0px;">
+            <!-- <strong>各月份借书量变化</strong>&nbsp;&nbsp; -->
+            <div class="layui-header layui-bg-blue" style="widows: 100%;height: 100%;">
+                <div class="layui-logo layui-bg-blue" style="line-height: 42px;width: 160px">各月份借书量变化</div>
+                <ul class="layui-nav  layui-layout-right">
+                    <li class="layui-nav-item" lay-unselect="" style="line-height: 42px;">
+                        <a href="javascript:;">年份</a>
+                        <dl class="layui-nav-child">
+                          <dd><a href="javascript:;" onclick="yearchoice(2015)">2015</a></dd>
+                          <dd><a href="javascript:;" onclick="yearchoice(2016)">2016</a></dd>
+                          <dd><a href="javascript:;" onclick="yearchoice(2017)">2017</a></dd>
+                          <dd><a href="javascript:;" onclick="yearchoice(2018)">2018</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+        </div>
         </div>
         <div class="layui-card-body">
             <div id="main" style="height:240px"></div>
         </div>
     </div>
     <div class="layui-col-md12 layui-card" >
-        <div class="layui-card-header">
-            <strong>借书类型比例</strong>&nbsp;&nbsp;
-            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe654;</i></button>
+        <div class="layui-card-header" style="width: 100%;padding: 0px;">
+            <!-- <strong>借书类型比例</strong>&nbsp;&nbsp; -->
+            <div class="layui-header layui-bg-blue" style="widows: 100%;height: 100%;">
+                <div class="layui-logo layui-bg-blue" style="line-height: 42px;width: 130px">借书类型比例</div>
+                <ul class="layui-nav  layui-layout-right">
+                    <li class="layui-nav-item" lay-unselect="" style="line-height: 42px;">
+                        <a href="javascript:;">学院</a>
+                        <dl class="layui-nav-child">
+                            {% for c in colleges %}
+                          <dd><a href="javascript:;" onclick="collegechoice('{{ c }}')">{{ c }}</a></dd>
+                          {% endfor %}
+                        </dl>
+                    </li>
+                </ul>
+        </div>
+            
         </div>
         <div class="layui-card-body">
             <div id="main1" style="height:200px"></div>
@@ -74,6 +100,83 @@ layui-this
                 echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
             }
         });
+
+        function yearchoice(id){
+        $.ajax({
+            url:'/student/update21/',
+            type:'get',
+            data:{a:id, csrfmiddlewaretoken:'{{ csrf_token }}'},
+            success: function(data){
+                var a = $.parseJSON(data)
+                layer.msg("success",{icon:1})
+                var dd = a.a
+                require(
+            [
+                'echarts',
+                'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/line'
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main')); 
+                
+                var option = {
+                    tooltip : {
+                        trigger: 'axis'
+                    },
+                    toolbox: {
+                        show : true,
+                        feature : {
+                            magicType : {show: true, type: ['line', 'bar']},
+                            restore : {show: true},
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    calculable : true,
+                    xAxis : [
+                        {
+                            type : 'category',
+                            boundaryGap : false,
+                            data : ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月',]
+                        }
+                    ],
+                    yAxis : [
+                        {
+                            type : 'value',
+                            axisLabel : {
+                                formatter: '{value} 本'
+                            }
+                        }
+                    ],
+                    series : [
+                        {
+                            name:'借书量',
+                            type:'line',
+                            data:dd,
+                            markPoint : {
+                                data : [
+                                    {type : 'max', name: '最大值'},
+                                    {type : 'min', name: '最小值'}
+                                ]
+                            },
+                            markLine : {
+                                data : [
+                                    {type : 'average', name: '平均值'}
+                                ]
+                            }
+                        },
+                    ]
+                };
+                    
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+
+                    )
+    
+            },
+        })
+    }
         
         // 使用
         require(
@@ -146,6 +249,71 @@ layui-this
                 echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
             }
         });
+
+        function collegechoice(id){
+        $.ajax({
+            url:'/student/update22/',
+            type:'get',
+            data:{a:id, csrfmiddlewaretoken:'{{ csrf_token }}'},
+            success: function(data){
+                var a = $.parseJSON(data)
+                layer.msg("success",{icon:1})
+                var dd = a.b
+               require(
+            [
+                'echarts',
+                'echarts/chart/pie', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/funnel'
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main1')); 
+                
+                var option = {
+                    tooltip : {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    toolbox: {
+                        show : true,
+                        feature : {
+                            magicType : {
+                                show: true, 
+                                type: ['pie', 'funnel'],
+                                option: {
+                                    funnel: {
+                                        x: '25%',
+                                        width: '50%',
+                                        funnelAlign: 'left',
+                                        max: 1548
+                                    }
+                                }
+                            },
+                            restore : {show: true},
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    calculable : true,
+                    series : [
+                        {
+                            name:'借书类型',
+                            type:'pie',
+                            radius : '55%',
+                            center: ['50%', '60%'],
+                            data:dd
+                        }
+                    ]
+                };
+                    
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+
+                    )
+    
+            },
+        })
+    }
         
         // 使用
         require(

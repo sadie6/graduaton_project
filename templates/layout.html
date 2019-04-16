@@ -17,8 +17,7 @@
                 <li class="layui-nav-item" lay-unselect="">
     <a href="javascript:;"><img src="//t.cn/RCzsdCq" class="layui-nav-img">我</a>
     <dl class="layui-nav-child">
-      <dd><a href="javascript:;">修改信息</a></dd>
-      <dd><a href="javascript:;">安全管理</a></dd>
+      <dd><a href="/manage">账号管理</a></dd>  
       <dd><a href="/logout">退了</a></dd>
     </dl>
   </li>
@@ -46,14 +45,17 @@
                     <li class="layui-nav-item">
                         <a href="/student/cartoon/" class="{% block nav-cartoon %}{% endblock %}">一卡通模块</a>
                     </li>
-                    <li class="layui-nav-item layui-nav-itemed">
+                    <li class="layui-nav-item">
+                        <a href="/student/fp_growth" class="{% block nav-fp_1 %}{% endblock %}">学生成绩与借书数据</a>
+                    </li>
+                    <!-- <li class="layui-nav-item layui-nav-itemed">
                         <a class="" href="javascript:;">关联分析模块</a>
                         <dl class="layui-nav-child">
-                            <dd><a href="/student/fp_growth" class="{% block nav-fp_1 %}{% endblock %}">学生成绩与借书数据</a></dd>
-                            <dd><a href="/transport_management/route" class="{% block nav-route %}{% endblock %}">xxxx</a></dd>
-                            <dd><a href="/transport_management/time" class="{% block nav-time %}{% endblock %}">xxxxx</a></dd>
+                            <dd><a href="/student/fp_growth" class="">学生成绩与借书数据</a></dd>
+                            <dd><a href="" class="{% block nav-route %}{% endblock %}">xxxx</a></dd>
+                            <dd><a href="" class="{% block nav-time %}{% endblock %}">xxxxx</a></dd>
                         </dl>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>

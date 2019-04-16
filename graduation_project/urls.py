@@ -22,4 +22,9 @@ urlpatterns = [
     url(r'^login/', views.login),
     url(r'^logout',views.logout),
     url(r'^student/', include('student.urls')),
+    url(r'^manage/', views.manage),
+    url(r'^update_role/', views.update_role),
+    url(r'^insert_role/', views.insert_role),
+    url(r'^delete_role/', views.delete_role),
+
 ]

@@ -27,3 +27,41 @@ def logout(request):
     request.session.clear()
     return render(request,'login.html')
 
+
+def manage(request):
+    user_id = int(request.session.get('user_id'))
+    if user_id == 1001:
+        roles = Administrator.objects.all()
+
+        return render(request, 'price.html', {'roles': roles})
+    else:
+        return render(request, 'handle.html', {'error': "抱歉，你没有权限！！"})
+
+
+def delete_role(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        if user_id != '1001':
+            Administrator.objects.filter(user_id=user_id).delete()
+        else:
+            return HttpResponse(0)
+    return HttpResponseRedirect('/manage/')
+
+
+
+def update_role(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        password = request.POST.get('password')
+        Administrator.objects.filter(user_id=user_id).update(password=password)
+    return HttpResponseRedirect('/manage/')
+
+
+
+def insert_role(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        password = request.POST.get('password')
+        Administrator.objects.create(user_id=user_id,password=password)
+    return HttpResponseRedirect('/manage/')
+

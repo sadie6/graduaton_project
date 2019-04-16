@@ -9,7 +9,7 @@ layui-this
 <!-- 内容主体区域 -->
     <div class="layui-col-md12 layui-card">
         <div class="layui-card-header">
-            <strong>运费信息</strong>&nbsp;&nbsp;
+            <strong>账号信息</strong>&nbsp;&nbsp;
             <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe654;</i></button>
         </div>
         <div class="layui-card-body">
@@ -18,25 +18,22 @@ layui-this
                     <col width="25">
                     <col width="25">
                     <col width="20">
-                    <col width="15">
                 </colgroup>
                 <thead>
                     <tr>
-                        <th>出发站点名称</th>
-                        <th>终止站点名称</th>
-                        <th>运费</th>
+                        <th>账号ID</th>
+                        <th>密码</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for freight in freights %}
-                    <tr>
-                        <td>{{ freight.from_station_id.station_name }}</td>
-                        <td>{{ freight.to_station_id.station_name }}</td>
-                        <td>{{ freight.price }}</td>
+                    {% for role in roles %}
+                    <tr id = "{{ role.user_id }}">
+                        <td>{{ role.user_id }}</td>
+                        <td>{{ role.password }}</td>
                         <td>
-                            <button class="layui-btn layui-btn-sm" onclick="updateInfo()"><i class="layui-icon">&#xe642;</i></button>
-                            <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del()"><i class="layui-icon">&#xe640;</i></button>
+                            <button class="layui-btn layui-btn-sm" onclick="updateInfo({{ role.user_id }})"><i class="layui-icon">&#xe642;</i></button>
+                            <button class="layui-btn layui-btn-danger layui-btn-sm" onclick="del({{ role.user_id }})"><i class="layui-icon">&#xe640;</i></button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -49,38 +46,53 @@ layui-this
 
 {% block script %}
 <script>
-    var stations = ""
-    {% for station in stations %}
-    stations += '<option value="{{ station.station_id }}">{{ station.station_name }}</option>'
-    {% endfor %}
+    layui.use('element', function(){
+        var element = layui.element; 
+    });
+    
 
-    function updateInfo() {
+    function updateInfo(id) {
         var tmp = $('#' + id).children()
-        var from_station_id = tmp.eq(0).attr('name')
-        var to_station_id = tmp.eq(1).attr('name')
-        var price = tmp.eq(2).html()
+        var user_id = tmp.eq(0).html()
+        // var to_station_id = tmp.eq(1).attr('name')
+        var password = tmp.eq(1).html()
         layer.open({
             type: 1,
             area: ['500px', '600px'],
-            title: "修改运费信息", //宽高
-            content: '<form action="/freight_management/update" method="post">' + "{% csrf_token %}" + '<div class="layui-form-item"><label class="layui-form-label">出发站点</label><div class="layui-input-block"><select name="from_station_id" lay-verify=""><option value="">请选择出发站点</option><option value="10000000">一号站点</option><option value="10000002">二号站点</option><option value="10000005">三号站点</option><option value="10000007">四号站点</option></select></div></div><div class="layui-form-item"><label class="layui-form-label">终止站点</label><div class="layui-input-block"><select name="to_station_id" lay-verify=""><option value="">请选择终止站点</option><option value="10000000">一号站点</option><option value="10000002">二号站点</option><option value="10000005">三号站点</option><option value="10000007">四号站点</option></select></div></div><div class="layui-form-item"><label class="layui-form-label">运费</label><div class="layui-input-block"><input type="text" name="price" lay-verify="price" autocomplete="off" class="layui-input" /></div></div><div class="layui-right"><button type="submit" class="layui-btn layui-btn-sm">添加</button><button class="layui-btn layui-btn-sm">取消</button></div></form>'
-        })
+            title: "修改账号密码", //宽高
+            content: '<form action="/update_role/" method="post">' + '{% csrf_token %}' + '<div class="layui-form-item"><label class="layui-form-label">账号</label><div class="layui-input-block"><input type="text" readonly="readonly" value="' + user_id + '"name="user_id" lay-verify="user_id" autocomplete="off" class="layui-input" /></div></div><div class="layui-form-item"><label class="layui-form-label">密码</label><div class="layui-input-block"><input type="text" value="' + password + '"name="password" lay-verify="password" autocomplete="off" class="layui-input" /></div></div><div class="layui-right"><button type="submit" class="layui-btn layui-btn-sm">添加</button><button class="layui-btn layui-btn-sm">取消</button></div></form>'
+            
+        });
         form.render()
     }
     function add() {
         layer.open({
             type: 1,
             area: ['500px', '300px'],
-            title: "新建运费", //宽高
-            content: '<form action="/freight_management/insert" method="post">' + "{% csrf_token %}" + '<div class="layui-form-item"><label class="layui-form-label">出发站点</label><div class="layui-input-block"><select name="from_station_id" lay-verify=""><option value="">请选择出发站点</option><option value="10000000">一号站点</option><option value="10000002">二号站点</option><option value="10000005">三号站点</option><option value="10000007">四号站点</option></select></div></div><div class="layui-form-item"><label class="layui-form-label">终止站点</label><div class="layui-input-block"><select name="to_station_id" lay-verify=""><option value="">请选择终止站点</option><option value="10000000">一号站点</option><option value="10000002">二号站点</option><option value="10000005">三号站点</option><option value="10000007">四号站点</option></select></div></div><div class="layui-form-item"><label class="layui-form-label">运费</label><div class="layui-input-block"><input type="text" name="price" lay-verify="price" autocomplete="off" class="layui-input" /></div></div><div class="layui-right"><button type="submit" class="layui-btn layui-btn-sm">添加</button><button class="layui-btn layui-btn-sm">取消</button></div></form>'
+            title: "新建账号", //宽高
+            content:  '<form class="layui-form" action="/insert_role/" method="post">' + '{% csrf_token %}' + '<div class="layui-form-item"><label class="layui-form-label">账号</label><div class="layui-input-block"><input type="text" name="user_id" lay-verify="user_id" autocomplete="off" class="layui-input" /></div></div><div class="layui-form-item"><label class="layui-form-label">密码</label><div class="layui-input-block"><input type="text" name="password" lay-verify="password" autocomplete="off" class="layui-input" /></div></div><div class="layui-right"><button type="submit" class="layui-btn layui-btn-sm">添加</button><button class="layui-btn layui-btn-sm">取消</button></div></form>'
         });
         form.render()
     }
-    function del() {
+    function del(user_id) {
         layer.confirm('确认删除？', {
             btn: ['确认','取消'] //按钮
         }, function(){
-            layer.msg('删除成功', {icon: 1});
+            $.ajax({
+                url: '/delete_role/',
+                type: 'post',
+                data: {user_id: user_id, csrfmiddlewaretoken: '{{ csrf_token }}'}, 
+                success: function(a) {
+                    if(a=='0'){
+                        layer.msg('删除失败,权限不够', {icon: 0});
+                    }
+                    else{
+                        layer.msg('删除成功', {icon: 1});
+                        location.reload()
+                    }
+                    
+                }
+            })
         });
     }
 </script>

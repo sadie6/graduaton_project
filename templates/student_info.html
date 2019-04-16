@@ -9,38 +9,91 @@ layui-this
 <div class="layui-body" >
 <!-- 内容主体区域 -->
 <div style="width:296px;float:left;">
-    <div class="layui-col-md12 layui-card" >
-        <div class="layui-card-header">
-            <strong>政治面貌</strong>&nbsp;&nbsp;
-            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe62c;</i></button>
+    <div class="layui-col-md12 layui-card" ">
+        <div class="layui-card-header" style="width: 100%;padding: 0px;">
+            <div class="layui-header layui-bg-blue" style="widows: 100%;height: 100%;">
+                <div class="layui-logo layui-bg-blue" style="line-height: 42px;width: 100px">政治面貌</div>
+                <ul class="layui-nav  layui-layout-right">
+                    <li class="layui-nav-item" lay-unselect="" style="line-height: 42px;">
+                        <a href="javascript:;">学期</a>
+                        <dl class="layui-nav-child">
+                          <dd><a href="javascript:;" onclick="term(1)">大一</a></dd>
+                          <dd><a href="javascript:;" onclick="term(2)">大二</a></dd>
+                          <dd><a href="javascript:;" onclick="term(3)">大三</a></dd>
+                          <dd><a href="javascript:;" onclick="term(4)">大四</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+        </div>
+    
         </div>
         <div class="layui-card-body">
             <div id="main" style="height:200px"></div>
         </div>
     </div>
     <div class="layui-col-md12 layui-card" >
-        <div class="layui-card-header">
-            <strong>学院分布</strong>&nbsp;&nbsp;
-            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe62c;</i></button>
+        <div class="layui-card-header" style="width: 100%;padding: 0px;">
+            <!-- <strong>学院分布</strong>&nbsp;&nbsp; -->
+             <div class="layui-header layui-bg-blue" style="widows: 100%;height: 100%;">
+                <div class="layui-logo layui-bg-blue" style="line-height: 42px;width: 100px">学院分布</div>
+                <ul class="layui-nav  layui-layout-right">
+                    <li class="layui-nav-item" lay-unselect="" style="line-height: 42px;">
+                        <a href="javascript:;">性别</a>
+                        <dl class="layui-nav-child">
+                          <dd><a href="javascript:;" onclick="sexchoice('Y')">男</a></dd>
+                          <dd><a href="javascript:;" onclick="sexchoice('X')">女</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+        </div>
+            
         </div>
         <div class="layui-card-body">
             <div id="main3" style="height:200px"></div>
         </div>
     </div>
 </div>
-    <div class="layui-col-md12 layui-card" style="width:500px;margin-left:10px;">
-        <div class="layui-card-header">
-            <strong>生源地分布</strong>&nbsp;&nbsp;
-            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe62c;</i></button>
+    <div class="layui-col-md12 layui-card" style="width:490px;margin-left:10px;">
+        <div class="layui-card-header" style="width: 100%;padding: 0px;">
+            <!-- <strong>生源地分布</strong>&nbsp;&nbsp; -->
+            <div class="layui-header layui-bg-blue" style="widows: 100%;height: 100%;">
+                <div class="layui-logo layui-bg-blue" style="line-height: 42px;width: 120px">生源地分布</div>
+                <ul class="layui-nav  layui-layout-right">
+                    <li class="layui-nav-item" lay-unselect="" style="line-height: 42px;">
+                        <a href="javascript:;">年份</a>
+                        <dl class="layui-nav-child">
+                          <dd><a href="javascript:;" onclick="yearchoice(150)">2015</a></dd>
+                          <dd><a href="javascript:;" onclick="yearchoice(160)">2016</a></dd>
+                          <dd><a href="javascript:;" onclick="yearchoice(170)">2017</a></dd>
+                          <dd><a href="javascript:;" onclick="yearchoice(180)">2018</a></dd>
+                          <dd><a href="javascript:;" onclick="yearchoice(190)">2019</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+        </div>
+            
         </div>
         <div class="layui-card-body">
             <div id="main1" style="height:479px"></div>
         </div>
     </div>
     <div class="layui-col-md12 layui-card" style="width:296px;float:right">
-        <div class="layui-card-header">
-            <strong>男女比例</strong>&nbsp;&nbsp;
-            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe62c;</i></button>
+        <div class="layui-card-header" style="width: 100%;padding: 0px;">
+            <!-- <strong>男女比例</strong>&nbsp;&nbsp; -->
+            <div class="layui-header layui-bg-blue" style="widows: 100%;height: 100%;">
+                <div class="layui-logo layui-bg-blue" style="line-height: 42px;width: 100px">男女比例</div>
+                <ul class="layui-nav  layui-layout-right">
+                    <li class="layui-nav-item" lay-unselect="" style="line-height: 42px;">
+                        <a href="javascript:;">学院</a>
+                        <dl class="layui-nav-child">
+                            {% for p in d %}
+                          <dd><a href="javascript:;" onclick="xueyuanchoice('{{ p.college }}')">{{ p.college }}</a></dd>
+                       {% endfor %}
+                        </dl>
+                    </li>
+                </ul>
+        </div>
+            
         </div>
         <div class="layui-card-body">
             <div id="main2" style="height:200px"></div>
@@ -48,9 +101,27 @@ layui-this
     </div>
     
     <div class="layui-col-md12 layui-card" style="width:296px;float:right">
-        <div class="layui-card-header">
-            <strong>考生类别</strong>&nbsp;&nbsp;
-            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe62c;</i></button>
+        <div class="layui-card-header" style="width: 100%;padding: 0px;">
+            <!-- <strong>考生类别</strong>&nbsp;&nbsp; -->
+            <div class="layui-header layui-bg-blue" style="widows: 100%;height: 100%;">
+                <div class="layui-logo layui-bg-blue" style="line-height: 42px;width: 100px">考生类别</div>
+                <ul class="layui-nav  layui-layout-right">
+                    <li class="layui-nav-item" lay-unselect="" style="line-height: 42px;">
+                        <a href="javascript:;">地域</a>
+                        <dl class="layui-nav-child">  
+                          <dd><a href="javascript:;" onclick="placechoice('东北')">东北</a></dd>
+                          <dd><a href="javascript:;" onclick="placechoice('华东')">华东</a></dd>
+                          <dd><a href="javascript:;" onclick="placechoice('华北')">华北</a></dd>
+                          <dd><a href="javascript:;" onclick="placechoice('华中')">华中</a></dd>
+                          <dd><a href="javascript:;" onclick="placechoice('华南')">华南</a></dd>
+                          <dd><a href="javascript:;" onclick="placechoice('西南')">西南</a></dd>
+                          <dd><a href="javascript:;" onclick="placechoice('西北')">西北</a></dd>
+                       
+                        </dl>
+                    </li>
+                </ul>
+        </div>
+            
         </div>
         <div class="layui-card-body">
             <div id="main4" style="height:200px"></div>
@@ -60,7 +131,7 @@ layui-this
     <div class="layui-col-md12 layui-card" >
         <div class="layui-card-header">
             <strong>学生概括</strong>&nbsp;&nbsp;
-            <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe654;</i></button>
+            <!-- <button class="layui-btn layui-btn-sm" onclick="add()"><i class="layui-icon">&#xe654;</i></button> -->
         </div>
         <div class="layui-card-body">
             <table class="layui-table" >
@@ -99,24 +170,115 @@ layui-this
 
 {% block script %}
 <script type="text/javascript">
+    // function first_term(){
+    //     $.ajax({
+    //         url:'/student/update11/',
+    //         type:'get',
+    //         data:{a:111, csrfmiddlewaretoken:'{{ csrf_token }}'},
+    //         success: function(data){
+    //             var a = $.parseJSON(data)
+    //             console.log(a),
+    //             layer.msg("success",{icon:1});
+    //         },
+    //     })
+    // }
+</script>
+
+     
+<script type="text/javascript">
         // 路径配置
         require.config({
             paths: {
                 echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
             }
         });
+
+        function term(id){
+        $.ajax({
+            url:'/student/update11/',
+            type:'get',
+            data:{a:id, csrfmiddlewaretoken:'{{ csrf_token }}'},
+            success: function(data){
+                var a = $.parseJSON(data)
+                layer.msg("success",{icon:1})
+                var d1 = a.X
+                var d2 = a.Y
+                require(
+                    [
+                'echarts',
+                'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/line'
+            ],
+            function et(ec) {
+                // 基于准备好的dom，初始化echarts图表
+                myChart = ec.init(document.getElementById('main')); 
+    
+                // 为echarts对象加载数据
+                var option = {
+                    tooltip : {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x:'left',
+                        data:['男','女']
+                    },
+                    toolbox: {
+                        show : true,
+                        feature : {
+                            magicType : {show: true, type: ['line', 'bar']},
+                            restore : {show: true},
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    calculable : true,
+                    xAxis : [
+                        {
+                            type : 'category',
+                            data : ['党员','预备党员','团员','其他']
+                        }
+                    ],
+                    yAxis : [
+                        {
+                            type : 'value'
+                        }
+                    ],
+                    series : [
+                        {
+                            name:'男',
+                            type:'bar',
+                            data:d2,
+                          
+                        },
+                        {
+                            name:'女',
+                            type:'bar',
+                            data:d1,
+                           
+                        }
+                    ]
+                }; 
+
+
+                myChart.setOption(option);
+            }
+
+                    )
+    
+            },
+        })
+    }
         
-        // 使用
         require(
             [
                 'echarts',
                 'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
                 'echarts/chart/line'
             ],
-            function (ec) {
+            function et(ec) {
                 // 基于准备好的dom，初始化echarts图表
                 var myChart = ec.init(document.getElementById('main')); 
-                
+    
+                // 为echarts对象加载数据 
                 var option = {
                     tooltip : {
                         trigger: 'axis'
@@ -160,11 +322,16 @@ layui-this
                         }
                     ]
                 };
-        
-                // 为echarts对象加载数据 
-                myChart.setOption(option); 
+
+                myChart.setOption(option);
             }
+
+
         );
+    
+        
+
+        
     </script>
 <script type="text/javascript">
         // 路径配置
@@ -173,7 +340,94 @@ layui-this
                 echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
             }
         });
+
+        function yearchoice(id){
+        $.ajax({
+            url:'/student/update13/',
+            type:'get',
+            data:{a:id, csrfmiddlewaretoken:'{{ csrf_token }}'},
+            success: function(data){
+                var a = $.parseJSON(data)
+                layer.msg("success",{icon:1})
+                var b = a.b
+                require(
+            [
+                'echarts',
+                'echarts/chart/map',
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main1')); 
+                var option = {
+                    tooltip : {
+                        trigger: 'item'
+                    },
+                    dataRange: {
+                        orient: 'horizontal',
+                        min: 0,
+                        max: 300,
+                        text:['高','低'],           // 文本，默认为数值文本
+                        splitNumber:0
+                    },
+                    toolbox: {
+                        show : true,
+                        orient: 'vertical',
+                        x:'right',
+                        y:'center',
+                    },
+                    series : [
+                        {
+                            name: '生源地分布',
+                            type: 'map',
+                            mapType: 'china',
+                            mapLocation: {
+                                x: 'center'
+                            },
+                            selectedMode : 'multiple',
+                            itemStyle:{
+                                normal:{label:{show:true}},
+                                emphasis:{label:{show:true}}
+                            },
+                            data:b
+                        },
+                        
+                    ],
+                    animation: false
+                };
+                var ecConfig = require('echarts/config');
+                myChart.on(ecConfig.EVENT.MAP_SELECTED, function (param){
+                    var selected = param.selected;
+                    var mapSeries = option.series[0];
+                    var data = [];
+                    var legendData = [];
+                    var name;
+                    for (var p = 0, len = mapSeries.data.length; p < len; p++) {
+                        name = mapSeries.data[p].name;
+                        //mapSeries.data[p].selected = selected[name];
+                        if (selected[name]) {
+                            data.push({
+                                name: name,
+                                value: mapSeries.data[p].value
+                            });
+                            legendData.push(name);
+                        }
+                    }
+                    option.legend.data = legendData;
+                    option.series[1].data = data;
+                    myChart.setOption(option, true);
+                })
+                    
         
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+
+                    )
+    
+            },
+        })
+    }
+
         // 使用
         require(
             [
@@ -183,7 +437,6 @@ layui-this
             function (ec) {
                 // 基于准备好的dom，初始化echarts图表
                 var myChart = ec.init(document.getElementById('main1')); 
-                
                 var option = {
                     tooltip : {
                         trigger: 'item'
@@ -261,6 +514,82 @@ layui-this
                 echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
             }
         });
+
+        function xueyuanchoice(id){
+        $.ajax({
+            url:'/student/update14/',
+            type:'get',
+            data:{a:id, csrfmiddlewaretoken:'{{ csrf_token }}'},
+            success: function(data){
+                var a = $.parseJSON(data)
+                layer.msg("success",{icon:1})
+                var cc = a.c
+                 require(
+            [
+                'echarts',
+                'echarts/chart/pie',
+                'echarts/chart/funnel' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main2')); 
+                
+                var option = {
+                    tooltip : {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        orient : 'vertical',
+                        x : 'left',
+                        y:'top',
+                        data:['男','女']
+                    },
+                    toolbox: {
+                        show : true,
+                        feature : {
+                            
+                            magicType : {
+                                show: true, 
+                                type: ['pie', 'funnel'],
+                                option: {
+                                    funnel: {
+                                        x: '25%',
+                                        width: '50%',
+                                        funnelAlign: 'left',
+                                        max: 1548
+                                    }
+                                }
+                            },
+                            restore : {show: true},
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    calculable : true,
+                    series : [
+                        {
+                            name:'男女比例',
+                            type:'pie',
+                            radius : '55%',
+                            center: ['50%', '60%'],
+                            data:[
+                                {value:cc[1] , name:'男'},
+                                {value:cc[0] , name:'女'},
+                             
+                            ]
+                        }
+                    ]
+                };
+        
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+
+                    )
+    
+            },
+        })
+    }
         
         // 使用
         require(
@@ -332,7 +661,71 @@ layui-this
                 echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
             }
         });
+
+        function sexchoice(id){
+        $.ajax({
+            url:'/student/update12/',
+            type:'get',
+            data:{a:id, csrfmiddlewaretoken:'{{ csrf_token }}'},
+            success: function(data){
+                var a = $.parseJSON(data)
+                layer.msg("success",{icon:1})
+                var dd = a.d
+                require(
+                    [
+                'echarts',
+                'echarts/chart/pie',
+                'echarts/chart/funnel'
+            ],
+           function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main3')); 
+                
+                var option = {
+                    
+                    tooltip : {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    
+                    toolbox: {
+                        show : true,
+                        feature : {
+                            magicType : {
+                                show: true, 
+                                type: ['pie', 'funnel']
+                            },
+                            restore : {show: true},
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    calculable : true,
+                    series : [
+                    
+                        {
+                            name:'面积模式',
+                            type:'pie',
+                            radius : ['10%', '40%'],
+                            center : ['50%', '50%'],
+                            roseType : 'area',
+                            x: '50%',               // for funnel
+                            max: 40,                // for funnel
+                            sort : 'ascending',     // for funnel
+                            data:dd
+                        }
+                    ]
+                };
+                    
         
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+
+                    )
+    
+            },
+        })
+    }
         // 使用
         require(
             [
@@ -397,6 +790,101 @@ layui-this
                 echarts: "{% static 'js/echarts-2.2.7/build/dist' %}"
             }
         });
+
+        function placechoice(id){
+        $.ajax({
+            url:'/student/update15/',
+            type:'get',
+            data:{a:id, csrfmiddlewaretoken:'{{ csrf_token }}'},
+            success: function(data){
+                var a = $.parseJSON(data)
+                layer.msg("success",{icon:1})
+                var dd = a.e
+                require(
+            [
+                'echarts',
+                'echarts/chart/pie',
+                'echarts/chart/funnel' // 使用柱状图就加载bar模块，按需加载
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main4')); 
+                
+                var option = {
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient : 'vertical',
+                    x : 'left',
+                    data:['农村应届','农村往届','城市应届','城市往届']
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        magicType : {
+                            show: true, 
+                            type: ['pie', 'funnel'],
+                            option: {
+                                funnel: {
+                                    x: '25%',
+                                    width: '50%',
+                                    funnelAlign: 'center',
+                                    max: 1548
+                                }
+                            }
+                        },
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                series : [
+                    {
+                        name:'考生类别',
+                        type:'pie',
+                        radius : ['40%', '50%'],
+                        itemStyle : {
+                            normal : {
+                                label : {
+                                    show : false
+                                },
+                                labelLine : {
+                                    show : false
+                                }
+                            },
+                            emphasis : {
+                                label : {
+                                    show : true,
+                                    position : 'center',
+                                    textStyle : {
+                                        fontSize : '12',
+                                        fontWeight : 'bold'
+                                    }
+                                }
+                            }
+                        },
+                        data:[
+                            {value:dd[0], name:'农村应届'},
+                            {value:dd[1], name:'农村往届'}, 
+                            {value:dd[2], name:'城市应届'},
+                            {value:dd[3], name:'城市往届'},
+                        ]
+                    }
+                ]
+            };
+                    
+        
+                // 为echarts对象加载数据 
+                myChart.setOption(option); 
+            }
+
+                    )
+    
+            },
+        })
+    }
         
         // 使用
         require(
@@ -480,54 +968,5 @@ layui-this
             }
         );
     </script>
-<script>
-    layui.use('element', function(){
-        var element = layui.element; 
-    });
 
-    drivers = ""
-
-    {% for driver in drivers %}
-    drivers += '<option value="{{ driver.staff_id }}">{{ driver.staff_name }}</option>'
-    {% endfor %}
-
-    function updateInfo(car_id) {
-        car_id = $('#' + car_id).children().eq(0).html()
-        car_license = $('#' + car_id).children().eq(1).html()
-        car_info = $('#' + car_id).children().eq(2).html()
-        driver_id = $('#' + car_id).children().eq(3).attr('name')
-        layer.open({
-            type: 1,
-            title: "修改车辆信息", //宽高
-            area: ['500px', '500px'],
-            content: '<form class="layui-form" action="/transport_management/update_car" method="post">' + "{% csrf_token %}" + '<div class="layui-form-item"><label class="layui-form-label">车辆编号</label><div class="layui-input-block"><input readonly="readonly" type="text" value="' + car_id + '" name="car_id" lay-verify="car_id" autocomplete="off" class="layui-input" /></div></div><div class="layui-form-item"><label class="layui-form-label">车牌号</label><div class="layui-input-block"><input type="text" value="' + car_license + '"name="car_license" lay-verify="car_license" autocomplete="off" class="layui-input" /></div></div><div class="layui-form-item"><label class="layui-form-label">车辆概况</label><div class="layui-input-block"><input type="text" value="' + car_info + '" name="car_info" lay-verify="car_info" autocomplete="off" class="layui-input" /></div></div><div class="layui-form-item"><label class="layui-form-label">车辆负责人</label><div class="layui-input-block"><select name="driver_id" lay-verify="required"><option value="">请选择员工</option>' + drivers + '</select></div></div><div class="layui-right"><button type="submit" class="layui-btn layui-btn-sm">添加</button><button class="layui-btn layui-btn-sm">取消</button></div></form>',
-        })
-        $('select[name=driver_id]').val(driver_id)
-        form.render()
-    }
-    function add() {
-        layer.open({
-            type: 1,
-            title: "新增车辆", //宽高
-            area: ['500px', '500px'],
-            content: '<form class="layui-form" action="/transport_management/insert_car" method="post">' + "{% csrf_token %}" + '<div class="layui-form-item"><label class="layui-form-label">车牌号</label><div class="layui-input-block"><input type="text" name="car_license" lay-verify="car_license" autocomplete="off" class="layui-input" /></div></div><div class="layui-form-item"><label class="layui-form-label">车辆概况</label><div class="layui-input-block"><input type="text" name="car_info" lay-verify="car_info" autocomplete="off" class="layui-input" /></div></div><div class="layui-form-item"><label class="layui-form-label">车辆负责人</label><div class="layui-input-block"><select name="driver_id" lay-verify="required"><option value="">请选择员工</option>' + drivers + '</select></div></div><div class="layui-right"><button type="submit" class="layui-btn layui-btn-sm">添加</button><button class="layui-btn layui-btn-sm">取消</button></div></form>'
-        })
-        form.render()
-    }
-    function del(car_id) {
-        layer.confirm('确认删除？', {
-            btn: ['确认','取消'] //按钮
-        }, function(){
-            $.ajax({
-                url: 'delete_car',
-                type: 'post',
-                data: {car_id: car_id, csrfmiddlewaretoken: '{{ csrf_token }}'}, 
-                success: function() {
-                    layer.msg('删除成功', {icon: 1});
-                    location.reload()
-                }
-            })
-        });
-    }
-</script>
 {% endblock %}

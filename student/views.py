@@ -19,7 +19,7 @@ def index(request):
 		a[i][1] = Student_Info.objects.filter(politics_status = 'B', sex = i).count()
 		a[i][2] = Student_Info.objects.filter(politics_status = 'C', sex = i).count()
 		a[i][3] = Student_Info.objects.filter(politics_status = 'D', sex = i).count()
-	
+	print(a)
 
 	#生源地分布
 	b = []
@@ -85,61 +85,148 @@ def library(request):
 	'a':a,
 	'b':b,
 	'c':c,
+	'colleges':colleges
 	}
 	print(c)
 	return render(request, 'library_info.html', content)
 
 def grade(request):
-	a = []
-	for i in range(1,8):
-		g1 = Student_Grade.objects.filter(term = i).count()
-		g2 = Student_Grade.objects.filter(term = i, grade__lt = 55).count()
-		a.append(g2/g1)
-	a.append(0)
+	college = request.GET.get("college", None)
+	if not college:
+		a = []
+		for i in range(1,8):
+			g1 = Student_Grade.objects.filter(term = i).count()
+			g2 = Student_Grade.objects.filter(term = i, grade__lt = 55).count()
+			a.append(g2/g1)
+		a.append(0)
 
-	b = []
-	for i in ['A', 'B', 'C']:
-		b.append(Student_Grade.objects.filter(category = i).count())
+		b = []
+		for i in ['A', 'B', 'C']:
+			b.append(Student_Grade.objects.filter(category = i).count())
 
-	c = []
-	c.append(Student_Grade.objects.filter(grade__gt = 89).count())
-	c.append(Student_Grade.objects.filter(grade__gt = 79, grade__lt = 89).count())
-	c.append(Student_Grade.objects.filter(grade__gt = 59, grade__lt = 79).count())
-	c.append(Student_Grade.objects.filter(grade__lt = 59).count())
+		c = []
+		c.append(Student_Grade.objects.filter(grade__gt = 89).count())
+		c.append(Student_Grade.objects.filter(grade__gt = 79, grade__lt = 89).count())
+		c.append(Student_Grade.objects.filter(grade__gt = 59, grade__lt = 79).count())
+		c.append(Student_Grade.objects.filter(grade__lt = 59).count())
 
-	d = Student_Grade.objects.values('course_name').annotate(num = Count('Id')).filter(grade__lt = 55).order_by('-num')[:10]
-	p = []
-	for d1 in d:
-		t = Student_Grade.objects.filter(course_name = d1['course_name']).aggregate(Avg('grade'))
-		x = {'avg_grade':t['grade__avg'], 'num':d1['num'] ,'course_name' : d1['course_name'], 'p':d1['num']/Student_Grade.objects.filter(course_name = d1['course_name']).count()}
-		p.append(x)
-	#print(p)
+		d = Student_Grade.objects.values('course_name').annotate(num = Count('Id')).filter(grade__lt = 55).order_by('-num')[:10]
+		p = []
+		for d1 in d:
+			t = Student_Grade.objects.filter(course_name = d1['course_name']).aggregate(Avg('grade'))
+			x = {'avg_grade':t['grade__avg'], 'num':d1['num'] ,'course_name' : d1['course_name'], 'p':d1['num']/Student_Grade.objects.filter(course_name = d1['course_name']).count()}
+			p.append(x)
+		#print(p)
 
-	content = {
-	'a':a,
-	'b':b,
-	'c':c,
-	'p':p,
-	}
-	return render(request, 'grade_info.html',content)
+		content = {
+		'a':a,
+		'b':b,
+		'c':c,
+		'p':p,
+		'colleges':colleges
+		}
+		return render(request, 'grade_info.html',content)
+	else:
+		a = []
+		for i in range(1,8):
+			g1 = Student_Grade.objects.filter(term = i, s_id__college = college).count()
+			g2 = Student_Grade.objects.filter(term = i, grade__lt = 55, s_id__college = college).count()
+			a.append(g2/g1)
+		a.append(0)
+
+		b = []
+		for i in ['A', 'B', 'C']:
+			b.append(Student_Grade.objects.filter(category = i, s_id__college = college).count())
+
+		c = []
+		c.append(Student_Grade.objects.filter(grade__gt = 89, s_id__college = college).count())
+		c.append(Student_Grade.objects.filter(grade__gt = 79, grade__lt = 89, s_id__college = college).count())
+		c.append(Student_Grade.objects.filter(grade__gt = 59, grade__lt = 79, s_id__college = college).count())
+		c.append(Student_Grade.objects.filter(grade__lt = 59, s_id__college = college).count())
+
+		d = Student_Grade.objects.values('course_name').annotate(num = Count('Id')).filter(grade__lt = 55, s_id__college = college).order_by('-num')[:10]
+		p = []
+		for d1 in d:
+			t = Student_Grade.objects.filter(course_name = d1['course_name']).aggregate(Avg('grade'))
+			x = {'avg_grade':t['grade__avg'], 'num':d1['num'] ,'course_name' : d1['course_name'], 'p':d1['num']/Student_Grade.objects.filter(course_name = d1['course_name'], s_id__college = college).count()}
+			p.append(x)
+		print(c)
+
+		content = {
+		'a':a,
+		'b':b,
+		'c':c,
+		'p':p,
+		'colleges':colleges
+		}
+		return render(request, 'grade_info.html',content)
+
 
 def internet(request):
-	a = [[],[],[],[]]
-	a[0] = Internet_Data.objects.filter(s_id__Id__startswith = 180)
-	a[1] = Internet_Data.objects.filter(s_id__Id__startswith = 170)
-	a[2] = Internet_Data.objects.filter(s_id__Id__startswith = 160)
-	a[3] = Internet_Data.objects.filter(s_id__Id__startswith = 150)
+	term = request.GET.get("term", None)
+	if not term:
+		# a = [[],[],[],[]]
+		# a[0] = Internet_Data.objects.filter(s_id__Id__startswith = 180)
+		# a[1] = Internet_Data.objects.filter(s_id__Id__startswith = 170)
+		# a[2] = Internet_Data.objects.filter(s_id__Id__startswith = 160)
+		# a[3] = Internet_Data.objects.filter(s_id__Id__startswith = 150)
 
-	b = []
+		shuju = [[], []]
+		c = Internet_Data.objects.filter(s_id__sex = 'X')
+		d = Internet_Data.objects.filter(s_id__sex = 'Y')
+		for x in c:
+			dt = []
+			dt.append(x.duration)
+			dt.append(x.flow)
+			shuju[0].append(dt)
+		for x in d:
+			dt = []
+			dt.append(x.duration)
+			dt.append(x.flow)
+			shuju[1].append(dt)
 
-	for i in range(0,24):
-		b.append(Internet_Data.objects.filter(login_time__hour = i).count())
-	print(b)
-	content = {
-	'a':a,
-	'b':b,
-	}
-	return render(request, 'internet_info.html', content)
+
+		b = []
+
+		for i in range(0,24):
+			b.append(Internet_Data.objects.filter(login_time__hour = i).count())
+		print(b)
+		content = {
+		'a':shuju,
+		'b':b,
+		}
+		return render(request, 'internet_info.html', content)
+	else:
+		# a = [[],[],[],[]]
+		# a[0] = Internet_Data.objects.filter(s_id__Id__startswith = 180)
+		# a[1] = Internet_Data.objects.filter(s_id__Id__startswith = 170)
+		# a[2] = Internet_Data.objects.filter(s_id__Id__startswith = 160)
+		# a[3] = Internet_Data.objects.filter(s_id__Id__startswith = 150)
+
+		shuju = [[], []]
+		c = Internet_Data.objects.filter(s_id__sex = 'X', s_id__Id__startswith = term)
+		d = Internet_Data.objects.filter(s_id__sex = 'Y', s_id__Id__startswith = term)
+		for x in c:
+			dt = []
+			dt.append(x.duration)
+			dt.append(x.flow)
+			shuju[0].append(dt)
+		for x in d:
+			dt = []
+			dt.append(x.duration)
+			dt.append(x.flow)
+			shuju[1].append(dt)
+
+		b = []
+
+		for i in range(0,24):
+			b.append(Internet_Data.objects.filter(login_time__hour = i, s_id__Id__startswith = term).count())
+		print(b)
+		content = {
+		'a':shuju,
+		'b':b,
+		}
+		return render(request, 'internet_info.html', content)
 
 def cartoon(request):
 	#消费次数随时间变化
@@ -299,7 +386,7 @@ def grade_insert(request):
 
 def internet_insert(request):
 	
-	for i in range(1000):
+	for i in range(40):
 		day = 11
 		t = np.random.choice([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,0], 
 			p = [0.011,0.01] + [0.01, 0.01, 0.007, 0.003, 0.009] + [0.05,0.07,0.07,0.08,0.08] + [0.02, 0.02] + [0.03, 0.04, 0.06] + [0.06, 0.06 , 0.1, 0.1,0.06] + [0.025, 0.015])
@@ -312,11 +399,13 @@ def internet_insert(request):
 		exit_time = '2018-11-%s %s:%s:%s' %(day,t2,m,m)
 		d1 = time.mktime(time.strptime(login_time,"%Y-%m-%d %H:%M:%S"))
 		d2 = time.mktime(time.strptime(exit_time, "%Y-%m-%d %H:%M:%S"))
-		duration = (d2 - d1)/60
-		flow = np.random.choice([1,2,3,4,5,6,7,8,9,10], p = [0.05,0.07,0.07] + [0.12,0.15,0.2] + [0.14,0.08,0.07,0.05]) * duration
-		s_id = Student_Info.objects.get(Id = random.randint(1800001, 1801000))
+		# duration = (d2 - d1)/60
+		duration = random.randint(300,500)
+		# flow = np.random.choice([1,2,3,4,5,6,7,8,9,10], p = [0.05,0.07,0.07] + [0.12,0.15,0.2] + [0.14,0.08,0.07,0.05]) * duration
+		flow = np.random.choice([1,2,3,4,5,6,7,8,9,10], p = [0.05,0.07,0.07] + [0.12,0.15,0.2] + [0.14,0.08,0.07,0.05])*350
+		s_id = Student_Info.objects.get(Id = random.randint(1500001, 1501000))
 		i1 = Internet_Data(login_time = login_time, exit_time = exit_time, duration = duration, flow = flow, s_id = s_id)
-		#i1.save()
+		i1.save()
 		print(login_time,exit_time,duration, flow,s_id)
 	return HttpResponse("success")
 
@@ -334,3 +423,85 @@ def cartoon_insert(request):
 	return HttpResponse("success")
 def award_insert(request):
 	pass
+
+
+import json
+#政治面貌
+def update11(request):
+	term = int(request.GET.get('a')) - 1
+	startwith = [150,160,170,180]
+	a = {'X':[0,0,0,0], 'Y':[0,0,0,0]}
+	for i in ['X', 'Y']:
+		a[i][0] = Student_Info.objects.filter(politics_status = 'A', sex = i, Id__startswith = startwith[term]).count()
+		a[i][1] = Student_Info.objects.filter(politics_status = 'B', sex = i, Id__startswith = startwith[term]).count()
+		a[i][2] = Student_Info.objects.filter(politics_status = 'C', sex = i, Id__startswith = startwith[term]).count()
+		a[i][3] = Student_Info.objects.filter(politics_status = 'D', sex = i, Id__startswith = startwith[term]).count()
+	print(a)
+	return HttpResponse(json.dumps(a))
+
+
+#学院分布
+def update12(request):
+	sex = request.GET.get('a')
+	d = []
+	for i in colleges:
+		d1 = {'name': i, 'value':Student_Info.objects.filter(college = i, sex = sex).count()}
+		d.append(d1)
+	# print(d)
+	return HttpResponse(json.dumps({'d':d}))
+
+#生源地分布
+def update13(request):
+	year = request.GET.get('a')
+	#生源地分布
+	b = []
+	for place in birthplaces:
+		p = {'name':place, 'value':Student_Info.objects.filter(birthplace = place, Id__startswith = year).count()}
+		b.append(p)
+	# print(d)
+	return HttpResponse(json.dumps({'b':b}))
+
+
+#男女比例
+def update14(request):
+	xueyuan = request.GET.get('a')
+	#男女比例
+	c = [0, 0]
+	c[0] = Student_Info.objects.filter(sex = 'X', college = xueyuan).count()
+	c[1] = Student_Info.objects.filter(sex = 'Y', college = xueyuan).count()
+	return HttpResponse(json.dumps({'c':c}))
+
+araes = {'东北':['黑龙江', '辽宁', '吉林'], '华东':['上海', '安徽', '江苏' '浙江', '福建', '江西', '山东'], 
+'华北':['内蒙古', '河北', '北京', '天津', '山西'], '华中':['河南', '湖南' , '湖北'], 
+'华南':['广西', '广东', '海南'], '西南':['重庆', '四川', '贵州', '云南' , '西藏'], '西北':['甘肃', '宁夏', '青海', '新疆', '陕西'],}
+#考生类别
+def update15(request):
+	place = request.GET.get('a')
+	#生源地分布
+	arae = araes[place]
+	e = [0,0,0,0]
+	e[0] = Student_Info.objects.filter(category = 'A', birthplace__in = arae).count()
+	e[1] = Student_Info.objects.filter(category = 'B', birthplace__in = arae).count()
+	e[2] = Student_Info.objects.filter(category = 'C', birthplace__in = arae).count()
+	e[3] = Student_Info.objects.filter(category = 'D', birthplace__in = arae).count()
+	return HttpResponse(json.dumps({'e':e}))
+
+
+
+#每月借书
+def update21(request):
+	year = request.GET.get('a')
+	a = []
+	for i in range(1,13):
+		a.append(Borrow_Books.objects.filter(time__month = i, time__year = year).count())
+	return HttpResponse(json.dumps({'a':a}))
+
+
+#借书类型
+def update22(request):
+	college = request.GET.get('a')
+	b = []
+	for i in categorys:
+		b1 = {'name':i, 'value':Borrow_Books.objects.filter(category = i, s_id__college = college).count()}
+		b.append(b1)
+	return HttpResponse(json.dumps({'b':b}))
