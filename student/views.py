@@ -405,7 +405,7 @@ def internet_insert(request):
 		flow = np.random.choice([1,2,3,4,5,6,7,8,9,10], p = [0.05,0.07,0.07] + [0.12,0.15,0.2] + [0.14,0.08,0.07,0.05])*350
 		s_id = Student_Info.objects.get(Id = random.randint(1500001, 1501000))
 		i1 = Internet_Data(login_time = login_time, exit_time = exit_time, duration = duration, flow = flow, s_id = s_id)
-		i1.save()
+		# i1.save()
 		print(login_time,exit_time,duration, flow,s_id)
 	return HttpResponse("success")
 

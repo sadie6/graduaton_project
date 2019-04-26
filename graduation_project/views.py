@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
 from student.models import Administrator
+
 def login(request):
     if request.method == 'GET':
         return render(request, 'login.html')
@@ -28,11 +29,13 @@ def logout(request):
     return render(request,'login.html')
 
 
+
+
+
 def manage(request):
     user_id = int(request.session.get('user_id'))
     if user_id == 1001:
         roles = Administrator.objects.all()
-
         return render(request, 'price.html', {'roles': roles})
     else:
         return render(request, 'handle.html', {'error': "抱歉，你没有权限！！"})
